@@ -31,3 +31,11 @@ on 3 sources in the same network.
 
 TODO: how to make an iptables logs parser to [@IvreRocks flow](https://ivre.rocks). 
 
+
+
+It's done and [pull request](https://github.com/cea-sec/ivre/pull/477) is on the way.
+Here is the graph with the same input file then the first picture.
+
+![Ivre flow using iptables parser](data/ivre-iptables-parser.png)
+
+
