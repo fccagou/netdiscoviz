@@ -3,7 +3,12 @@
 
 import sys, re, socket
 
-#iptRE=re.compile("(\w+\s\d+\s\d+:\d+:\d+).+SRC=([\d.]+)\s+DST=([\d.]+)\s(.*TTL=([\d]))+ID=([\d.]+)\s+(.*TCP|UDP)\s+SPT=(\d+)\s+DPT=(\d+)\s+SEQ=(\d+)\s+ACK=(\d+)")
+# IPTABLES wih SRC un DST
+#iptRE=re.compile("(\w+\s+\d+\s+\d+:\d+:\d+).+SRC=([\d.]+)\s+DST=([\d.]+)\s.*TTL=([\d]+)\s+ID=([\d]+)\s+.*PROTO=(TCP|UDP)\s+SPT=(\d+)\s+DPT=(\d+).*")
+# IPTABLES wih SRC un DST
+#iptRE_noSRC=re.compile("(\w+\s+\d+\s+\d+:\d+:\d+).+SRC=([\d.]+)\s+DST=([\d.]+)\s.*TTL=([\d]+)\s+ID=([\d]+)\s+.*PROTO=(\d+)")
+
+
 
 
 # ============================================================================
@@ -100,10 +105,10 @@ def viz_from_iptables_log(data, mode=''):
             sys.stderr.write("Error - %s\n" % v)
             continue
 
-        if not nodes.has_key(src):
+        if not src in nodes:
             nodes[src]=(cur_id, 'src', get_host_name(src))
             cur_id+=1
-        if not nodes.has_key(dst):
+        if not dst in nodes:
             nodes[dst]=(cur_id,'dst', get_host_name(dst))
             cur_id+=1
 
@@ -111,7 +116,7 @@ def viz_from_iptables_log(data, mode=''):
         proto_label="%s/%s" %(proto,port)
         if mode != 'proto_as_node':
             edge="%s_%s_%s_%s" %(src,proto,port,dst)
-            if vis_edges.has_key(edge):
+            if edge in vis_edges:
                 vis_edges[edge]['value']+=1
             else:
                 vis_edges[edge]={}
@@ -121,7 +126,7 @@ def viz_from_iptables_log(data, mode=''):
                 vis_edges[edge]['title'] = proto_label
 
         else:
-            if not nodes.has_key(proto_label):
+            if not proto_label in nodes:
                 nodes[proto_label]=(cur_id,'port', 'port')
                 cur_id+=1
 
@@ -129,7 +134,7 @@ def viz_from_iptables_log(data, mode=''):
             tagin="%s_%s" % (src,proto_label)
             tagout="%s_%s" % (proto_label,dst)
 
-            if  vis_edges.has_key(tagin):
+            if  tagin in vis_edges:
                 vis_edges[tagin]['value']+=1
             else:
                 vis_edges[tagin] = {}
@@ -138,7 +143,7 @@ def viz_from_iptables_log(data, mode=''):
                 vis_edges[tagin]['to'] = nodes[proto_label][0]
                 vis_edges[tagin]['title'] = ''
 
-            if  vis_edges.has_key(tagout):
+            if  tagout in vis_edges:
                 vis_edges[tagout]['value']+=1
             else:
                 vis_edges[tagout] = {}
@@ -163,7 +168,7 @@ if __name__ == '__main__':
 
     ( nodes, vis_edges ) = viz_from_iptables_log (packets, mode)
 
-    print "var nodes = new vis.DataSet(["
+    print("var nodes = new vis.DataSet([")
     for k in nodes.keys():
         if nodes[k][1] == 'src':
             #shape="shape: 'box', color:'#7BE141'"
@@ -176,12 +181,12 @@ if __name__ == '__main__':
         elif nodes[k][1] == 'port':
             shape="shape: 'circle', color:'#FFFF00'"
 
-        print "    {id: %s, label: '%s\\n%s', %s}," %(nodes[k][0],nodes[k][2],k, shape)
-    print ']);'
+        print("    {id: %s, label: '%s\\n%s', %s}," %(nodes[k][0],nodes[k][2],k, shape))
+    print(']);')
 
-    print "var edges = new vis.DataSet(["
+    print("var edges = new vis.DataSet([")
 
     for k in sorted(vis_edges):
-        print "{from: %s, to: %s, value: %s, label: '%s', arrows:'to', title:'%s'}," % (vis_edges[k]['from'], vis_edges[k]['to'], vis_edges[k]['value'], vis_edges[k]['title'], vis_edges[k]['value'])
+        print("{from: %s, to: %s, value: %s, label: '%s', arrows:'to', title:'%s'}," % (vis_edges[k]['from'], vis_edges[k]['to'], vis_edges[k]['value'], vis_edges[k]['title'], vis_edges[k]['value']))
 
-    print ']);'
+    print(']);')
