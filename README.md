@@ -29,13 +29,26 @@ on 3 sources in the same network.
 ![Sample ivre flow graphe](data/ivre-flow.png)
 
 
-TODO: how to make an iptables logs parser to [@IvreRocks flow](https://ivre.rocks). 
 
 
+And how about making an iptables logs parser to [@IvreRocks flow](https://ivre.rocks)?  
+Ivre's team was ok and I've done it. It's now [merged](https://github.com/cea-sec/ivre).
 
-It's done and [pull request](https://github.com/cea-sec/ivre/pull/477) is on the way.
+
 Here is the graph with the same input file then the first picture.
 
 ![Ivre flow using iptables parser](data/ivre-iptables-parser.png)
 
+
+Just for fun, use [ivre flowcli](https://github.com/cea-sec/ivre/blob/master/doc/FLOW.md) to generate graph :P
+
+```
+    ivre flowcli -s ' ' \
+       | awk '{ print  "IN=ivre SRC="$1" DST="$3" SPT= PROTO="$2 }'\
+       | sed 's#/# DPT=#' \
+       | ./iptables2vis.py > data/net.js
+
+    xdg-open index.html
+
+```
 
