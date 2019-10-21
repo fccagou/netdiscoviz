@@ -32,7 +32,7 @@ on 3 sources in the same network.
 
 
 And how about making an iptables logs parser to [@IvreRocks flow](https://ivre.rocks)?  
-Ivre's team was ok and I've done it. It's now [merged](https://github.com/cea-sec/ivre).
+Ivre's team was ok and I've done it. It's now [merged](https://doc.ivre.rocks/en/latest/overview/faq.html#how-can-i-configure-iptables-to-get-logs-used-by-flow2db-tool).
 
 
 Here is the graph with the same input file then the first picture.
